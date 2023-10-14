@@ -19,6 +19,18 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    "tunnel test": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "http://localhost:5211",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "createTunnel": true,
+      "tunnelAuthentication": "public"
+    },
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
