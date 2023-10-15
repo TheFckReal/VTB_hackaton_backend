@@ -6,6 +6,6 @@
         public string weight_name { get; set; }
         public double weight { get; set; }
         public double duration { get; set; }
-        public long distance { get; set; }
+        public decimal distance { get; set; }
     }
 }

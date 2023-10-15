@@ -1,4 +1,7 @@
-﻿namespace VTB.DatabaseModels;
+﻿using System;
+using System.Collections.Generic;
+
+namespace VTB.DatabaseModels;
 
 public partial class OpenHour
 {

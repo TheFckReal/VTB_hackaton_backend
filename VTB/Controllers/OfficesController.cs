@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VTB.DatabaseModels;
+using VTB.Models;
 using VTB.Models.OfficeTransferModels;
 using VTB.Services.Offices;
 
@@ -11,12 +14,10 @@ namespace VTB.Controllers
     public class OfficesController : ControllerBase
     {
         private readonly IOfficesService _officesService;
-        private readonly VtbContext _vbContext;
 
-        public OfficesController(IOfficesService officesService, VtbContext context)
+        public OfficesController(IOfficesService officesService)
         {
             _officesService = officesService;
-            _vbContext = context;
         }
 
         /// <summary>
@@ -50,28 +51,72 @@ namespace VTB.Controllers
             return foundedOffices;
         }
 
+        /// <summary>
+        /// Allows to get optimum department in the calculation of workload
+        /// </summary>
+        /// <param name="servicesIds">Array of client`s required services</param>
+        /// <param name="point">Point of user geolocation</param>
+        /// <returns>Info about optimal department</returns>
+        [HttpGet("optimum")]
+        public async Task<ActionResult<OfficesDTO?>> FindOptimumOffice([Required, FromQuery] List<int> servicesIds, [Required, FromQuery] OfficesDTO.Point point)
+        {
+            var optimumOffice = await _officesService.FindOptimumOfficeAsync(servicesIds, point);
+            if (optimumOffice is null)
+                return NotFound();
+            else
+                return optimumOffice;
+        }
+
+        /// <summary>
+        /// Allows to get coordinate array of route from begin point to end point
+        /// </summary>
+        /// <param name="fLon">Longitude of point from</param>
+        /// <param name="fLat">Latitude of point from</param>
+        /// <param name="tLon">Longitude of point to</param>
+        /// <param name="tLat">Longitude of point to</param>
+        /// <param name="profile">Type of movement in format {car/foot/bike}</param>
+        /// <returns>Coordinates of route from one point to another with time</returns>
+        [HttpGet("route")]
+        public async Task<ActionResult<DTORoute>> GetRouteFromPointToOffice(double fLon,
+            double fLat, double tLon, double tLat, string profile)
+        {
+            var resultCoordinates = await _officesService.GetRoutePoints(fLon, fLat, tLon, tLat, profile);
+            if (resultCoordinates.Item1 is null)
+                return NotFound();
+            else
+            {
+                var result = new DTORoute()
+                {
+                    Time = resultCoordinates.time ?? 0,
+                    Coordinates = new()
+                };
+                foreach (var coordinate in resultCoordinates.Item1)
+                {
+                    result.Coordinates.Add(new()
+                    {
+                        Lat = coordinate.lat,
+                        Lon = coordinate.lon,
+                    });
+                }
+                return result;
+            }
+        }
+
+        public record DTORoute
+        {
+            public List<Coordinate> Coordinates { get; set; }
+            public double Time { get; set; }
 
 
-        //[HttpGet("temp")]
-        //public async Task<ActionResult> CreateRandom()
-        //{
-        //    var offices = await _vbContext.Offices.ToListAsync();
-        //    var services = await _vbContext.Services.ToListAsync();
-        //    foreach (var vbContextOffice in _vbContext.Offices)
-        //    {
-        //        HashSet<int> idSet = new HashSet<int>();
-        //        for (int i = 0; i < 6; i++)
-        //        {
-        //            int id = Random.Shared.Next(1, 7);
-        //            if (!idSet.Contains(id))
-        //            {
-        //                idSet.Add(id);
-        //                vbContextOffice.Services.Add(services.First(x => x.Id == id));
-        //            }
-        //        }
-        //    }
-        //    await _vbContext.SaveChangesAsync();
-        //    return Content("Ok всё!");
-        //}
+            public record Coordinate
+            {
+                public double Lon { get; set; }
+                public double Lat { get; set; }
+            }
+
+        }
+
+
+
     }
 }

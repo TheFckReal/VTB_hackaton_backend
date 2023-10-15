@@ -1,4 +1,6 @@
-﻿using NetTopologySuite.Geometries;
+﻿using System;
+using System.Collections.Generic;
+using NetTopologySuite.Geometries;
 
 namespace VTB.DatabaseModels;
 
@@ -15,6 +17,12 @@ public partial class Office
     public string Status { get; set; } = null!;
 
     public bool? HasRamp { get; set; }
+
+    public int? CurrentQueue { get; set; }
+
+    public double? AverageWaiting { get; set; }
+
+    public double? DynamicQueueChange { get; set; }
 
     public virtual ICollection<OpenHour> OpenHours { get; set; } = new List<OpenHour>();
 

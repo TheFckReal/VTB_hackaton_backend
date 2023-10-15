@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using VTB.DatabaseModels;
 using VTB.Extensions;
 namespace VTB
@@ -21,10 +22,12 @@ namespace VTB
             });
 
             // Add VTB DB context
-            builder.Services.AddDbContext<VtbContext>();
+            builder.Services.AddDbContext<VtbContext>(opt => opt.LogTo(
+                l => Debug.WriteLine(l)
+                ));
             // Add services to work with offices
             builder.Services.AddApplicationServices();
-            
+
 
             var app = builder.Build();
 
@@ -38,7 +41,7 @@ namespace VTB
                     opt.AllowAnyHeader();
                 });
             }
-            
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
@@ -48,6 +51,6 @@ namespace VTB
             app.Run();
         }
 
-        
+
     }
 }

@@ -8,9 +8,11 @@
         public Point OfficePoint { get; set; } = null!;
         public string Status { get; set; } = null!;
         public bool? HasRamp { get; set; }
+        public int Queue { get; set; }
         public List<OpenHours> OpenHoursData { get; set; } = null!;
         public List<OpenHourIndividual> OpenHoursIndividualData { get; set; } = null!;
         public List<Services>? ServicesData { get; set; }
+        
 
         public record Point
         {
