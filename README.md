@@ -15,5 +15,6 @@ Users are responsible for interacting with user
 
 Models are DTO objects folder
 
+For additional data about API go to swagger.json
 
 
