@@ -10,8 +10,8 @@ Files:
 appsettings - configuring json file  
 
 Controllers and services:
-Offices are responsible for interacting with offices directly
-Users are responsible for interacting with user
+Offices are responsible for interacting with offices directly  
+Users are responsible for interacting with user  
 
 Models are DTO objects folder
 
